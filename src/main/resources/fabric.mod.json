@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "slotswap",
+  "version": "${version}",
+  "name": "Slot Swap",
+  "description": "Hold alt to scroll upward from the hotbar into the inventory",
+  "authors": [
+    "TurtleArmyMc"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/slot-swap",
+    "sources": "https://github.com/TurtleArmyMc/Slot-Swap"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/slotswap/icon.png",
+  "environment": "*",
+  "entrypoints": {},
+  "mixins": [
+    "modid.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric-api": "*",
+    "minecraft": "~1.19",
+    "java": ">=17"
+  },
+  "suggests": {},
+  "custom": {
+    "modmenu:clientsideOnly": true
+  }
+}
