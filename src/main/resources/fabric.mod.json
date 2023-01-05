@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {},
   "mixins": [
-    "modid.mixins.json"
+    "slotswap.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.9",
