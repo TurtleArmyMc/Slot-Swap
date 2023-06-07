@@ -3,7 +3,7 @@ package com.turtlearmymc.slotswap.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.turtlearmymc.slotswap.SwapManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -39,13 +39,13 @@ public abstract class InGameHudMixin {
 
 	@Invoker("renderHotbarItem")
 	public abstract void invokeRenderHotbarItem(
-			int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed
+			DrawContext context, int x, int y, float f, PlayerEntity player, ItemStack stack, int seed
 	);
 
 	@Inject(method = "render",
-			at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions; heldItemTooltips:Z",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHeldItemTooltip(Lnet/minecraft/client/gui/DrawContext;)V",
 					shift = At.Shift.BEFORE))
-	public void renderHotbarSwap(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+	public void renderHotbarSwap(DrawContext context, float tickDelta, CallbackInfo ci) {
 		if (MinecraftClient.getInstance().currentScreen != null) {
 			// If a screen is opened, cancel the swap
 			SwapManager.cancel();
@@ -63,7 +63,7 @@ public abstract class InGameHudMixin {
 		// Initialize render system for rendering hotbar
 		RenderSystem.enableBlend();
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
 
 		// Render hotbar selector
@@ -72,8 +72,17 @@ public abstract class InGameHudMixin {
 		if (SwapManager.getCurrentRow() != 0) {
 			final int hotbarX = xMid - 92 + inv.selectedSlot * 20;
 			final int hotbarY = scaledHeight - (SwapManager.ROW_COUNT - SwapManager.getCurrentRow() + 1) * HEIGHT - 1;
-			hud.drawTexture(matrices, hotbarX, hotbarY, 0, HEIGHT, WIDTH, HEIGHT + 2);
+//			hud.drawTexture(matrices, hotbarX, hotbarY, 0, HEIGHT, WIDTH, HEIGHT + 2);
+
+			context.drawTexture(WIDGETS_TEXTURE, hotbarX, hotbarY, 0, HEIGHT, WIDTH, HEIGHT + 2);
+
+//			context.getMatrices().push();
+//			context.getMatrices().translate(0.0f, 0.0f, -90.0f);
+//			context.drawTexture(WIDGETS_TEXTURE, i - 91, this.scaledHeight - 22, 0, 0, 182, 22);
+//			context.drawTexture(WIDGETS_TEXTURE, i - 91 - 1 + client.player.getInventory().selectedSlot * 20, this.scaledHeight - 22 - 1, 0, 22, 24, 22);
 		}
+
+
 
 		// Render inventory items. Row 0 is the hotbar
 		for (int row = 1; row < SwapManager.ROW_COUNT; row++) {
@@ -82,12 +91,12 @@ public abstract class InGameHudMixin {
 			final ItemStack slotItem = inv.main.get(SwapManager.rowColToSlot(row, inv.selectedSlot));
 			final int itemX = xMid - 88 + inv.selectedSlot * 20;
 			final int itemY = scaledHeight - 19 - (slotHeight * HEIGHT);
-			invokeRenderHotbarItem(itemX, itemY, tickDelta, client.player, slotItem, row + 2);
+			invokeRenderHotbarItem(context, itemX, itemY, tickDelta, client.player, slotItem, row + 2);
 		}
 
 		// Return render system settings to what they were before the mixin
 		RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-		RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
+//		RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
 		RenderSystem.disableBlend();
 	}
 
@@ -96,11 +105,11 @@ public abstract class InGameHudMixin {
 	// underneath other hud elements, so the selector must be prevented from
 	// drawing and be redrawn later instead.
 	@Redirect(method = "renderHotbar", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture (Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V",
+			target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V",
 			ordinal = 1))
 	public void preventRenderDefaultHotbarSelector(
-			InGameHud hud, MatrixStack matrices, int x, int y, int u, int v, int width, int height
+			DrawContext context, Identifier texture, int x, int y, int u, int v, int width, int height
 	) {
-		if (SwapManager.getCurrentRow() == 0) hud.drawTexture(matrices, x, y, u, v, width, height);
+		if (SwapManager.getCurrentRow() == 0) context.drawTexture(texture, x, y, u, v, width, height);
 	}
 }
