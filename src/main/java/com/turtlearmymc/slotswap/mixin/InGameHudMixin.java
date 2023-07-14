@@ -53,7 +53,7 @@ public abstract class InGameHudMixin {
 		}
 
 		final PlayerInventory inv = client.player.getInventory();
-		if (!Screen.hasAltDown()) {
+		if (!SwapManager.isSelectKeyDown()) {
 			SwapManager.tryDoSwap(inv);
 			return;
 		}

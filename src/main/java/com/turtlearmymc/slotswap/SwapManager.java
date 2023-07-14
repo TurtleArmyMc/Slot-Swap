@@ -1,15 +1,29 @@
 package com.turtlearmymc.slotswap;
 
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SwapManager {
+public class SwapManager implements ClientModInitializer {
 	public static final int ROW_COUNT = PlayerInventory.MAIN_SIZE / PlayerInventory.getHotbarSize();
 	private static int currentRow;
 	private static boolean active;
+
+	private static @Nullable KeyBinding selectSlotKey = null;
+
+	public static boolean isSelectKeyDown() {
+		if (selectSlotKey != null) {
+			return selectSlotKey.isPressed();
+		} else return false;
+	}
 
 	private static List<Integer> getFilledRows(PlayerInventory inv, int col) {
 		final List<Integer> filledRows = new ArrayList<>();
@@ -61,5 +75,15 @@ public class SwapManager {
 		if (currentRow == 0) return; // Hotbar selected
 		final int slot = rowColToSlot(currentRow, inv.selectedSlot);
 		MinecraftClient.getInstance().interactionManager.pickFromInventory(slot);
+	}
+
+	@Override
+	public void onInitializeClient() {
+		selectSlotKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+				"key.slotswap.swap",
+				InputUtil.Type.KEYSYM,
+				GLFW.GLFW_KEY_LEFT_ALT,
+				KeyBinding.INVENTORY_CATEGORY
+		));
 	}
 }
