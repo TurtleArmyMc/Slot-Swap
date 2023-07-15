@@ -1,5 +1,6 @@
 package com.turtlearmymc.slotswap;
 
+import com.turtlearmymc.slotswap.compat.LoadCompat;
 import com.turtlearmymc.slotswap.config.SwapConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -24,6 +25,8 @@ public class SwapManager implements ClientModInitializer {
 	public static SwapConfig CONFIG;
 
 	private static @Nullable KeyBinding selectSlotKey = null;
+
+	private static LoadCompat.Action compatibilityAction;
 
 	public static boolean isSelectKeyDown() {
 		if (selectSlotKey != null) {
@@ -50,6 +53,7 @@ public class SwapManager implements ClientModInitializer {
 			active = true;
 			currentRow = 0;
 		}
+		compatibilityAction.invoke();
 	}
 
 	public static void cancel() {
@@ -132,6 +136,8 @@ public class SwapManager implements ClientModInitializer {
 
 		AutoConfig.register(SwapConfig.class, JanksonConfigSerializer::new);
 		CONFIG = AutoConfig.getConfigHolder(SwapConfig.class).get();
+
+		compatibilityAction = LoadCompat.getActivationAction();
 
 		selectSlotKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.slotswap.swap",

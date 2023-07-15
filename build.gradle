@@ -12,6 +12,18 @@ version = project.mod_version + "+mc" + project.minecraft_version
 repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -28,6 +40,8 @@ dependencies {
 
     modApi "com.terraformersmc:modmenu:${project.modmenu}"
 
+    // only in classpath
+    modCompileOnly "maven.modrinth:autohud:${project.autohud_version}"
 }
 
 processResources {
