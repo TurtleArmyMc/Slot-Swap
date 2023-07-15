@@ -6,6 +6,6 @@ public class AutoHudCompatibility implements LoadCompat.Action {
 
     @Override
     public void invoke() {
-        Component.Hotbar.revealCombined();
+        Component.Hotbar.reveal();
     }
 }
