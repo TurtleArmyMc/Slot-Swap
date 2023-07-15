@@ -1,3 +1,5 @@
 {
-  "key.slotswap.swap": "Slot swap"
+  "key.slotswap.swap": "Slot swap",
+  "text.autoconfig.slotswap.option.swapMode": "Swap mode",
+  "text.autoconfig.slotswap.option.swapMode.@Tooltip": "COMPATIBLE:  Item swap with item pick packet, it may swap items randomly but is unlikely to trigger anti-cheat\nSWAP:          Simply swap the item with the selected\nSHIFT:         Shift the whole column up/down when swapping items"
 }
