@@ -20,6 +20,9 @@
   "entrypoints": {
     "client": [
       "com.turtlearmymc.slotswap.SwapManager"
+    ],
+    "modmenu": [
+      "com.turtlearmymc.slotswap.config.ModMenuEntry"
     ]
   },
   "mixins": [
