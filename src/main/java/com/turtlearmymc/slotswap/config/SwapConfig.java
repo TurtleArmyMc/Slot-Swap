@@ -2,10 +2,13 @@ package com.turtlearmymc.slotswap.config;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
 @Config(name = "slotswap")
 public class SwapConfig implements ConfigData {
 
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     public SwapMode swapMode = SwapMode.COMPATIBLE;
 
     public enum SwapMode {
